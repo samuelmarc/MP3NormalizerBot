@@ -1,0 +1,17 @@
+fr:
+  start: "**Salut %{user_mention}!**\n\nBienvenue dans **MP3 Normalizer** un bot où vous pouvez **régler un volume** et tous les audios que vous m'enverrez seront **par défaut**, vous pouvez également définir ma langue en utilisant `/settings`!"
+  down: "**⬇️ Téléchargement...** `%{progr}%`"
+  upl: "**⬆️ Chargement du fichier...** `%{progr}%`"
+  def_vol: "🔊 **Définir le volume...**"
+  settings: "⚙️ **Ici, vous pouvez définir la langue du bot et également définir le gain pour les audios envoyés au bot.**"
+  set_lang_btn: 🌏 Définir La Langue
+  set_lang_main: "🌏 **Définissez votre nouvelle langue ici.**"
+  same_lang: ❌ La langue que vous souhaitez définir est la même que celle que vous utilisez actuellement.
+  lang_def: ✅ Ok, nouvelle langue définie.
+  set_vol_btn: 🔊 Définir le volume
+  set_vol_main: "🔊 Ok, maintenant envoyez-moi un numéro, **faites attention aux numéros trop élevés, ils peuvent casser votre audio!**"
+  num_not_valid: "❌ **Le numéro envoyé n'est pas valide!**"
+  num_vol_same: "❌ **Le numéro envoyé est le même que celui que vous utilisez actuellement!**"
+  set_vol_es: "🕙 **Réponse expirée!**"
+  set_vol_sus: "✅ **OK, volume mis à jour.**"
+  back_btn: 🔙 Retourner

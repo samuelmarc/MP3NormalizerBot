@@ -1,0 +1,7 @@
+pyrogram
+tgcrypto
+pydub
+motor
+python-dotenv
+python-i18n[YAML]
+pyroaddon
