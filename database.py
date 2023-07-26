@@ -6,7 +6,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 print("Connecting to the database...")
 
 
-mgclient = AsyncIOMotorClient(Config.MONGO_URI)
+mgclient = AsyncIOMotorClient(Config.MONGO_URL)
 db = mgclient.mp3gain
 users_col = db.users
 
