@@ -5,10 +5,12 @@ from config import Config
 import logging
 import database
 import i18n
-from pydub import AudioSegment
 from pyroaddon.helpers import ikb
 import os
 from asyncio.exceptions import TimeoutError
+import asyncio
+from pydub import AudioSegment
+import re
 
 
 i18n.load_path.append('langs')
@@ -23,6 +25,14 @@ async def _(lang: str, key: str, **kwargs):
     i18n.set('locale', lang)
     text_in_lang = i18n.t(f'langs.{key}', **kwargs)
     return text_in_lang
+
+
+def audio_norm(path_file, vol):
+    sound = AudioSegment.from_file(path_file)
+    change_in_dBFS = vol - sound.dBFS
+    norm_sound = sound.apply_gain(change_in_dBFS)
+    norm_sound.export(path_file)
+    return 1
 
 
 mp3normalizer = Client(name='mp3normalizer', api_id=Config.API_ID, api_hash=Config.API_HASH, bot_token=Config.BOT_TOKEN, parse_mode=ParseMode.MARKDOWN)
@@ -66,7 +76,7 @@ async def repo(__, m: Message):
 
 
 @mp3normalizer.on_message(filters.audio & filters.private)
-async def audio_booster(__, m: Message):
+async def audio_normalizer(__, m: Message):
     vol = await database.get_vol(m.from_user.id)
     user_lang = await database.get_user_lang(m.from_user.id)
     text = await _(user_lang, 'down', progr='1')
@@ -75,18 +85,12 @@ async def audio_booster(__, m: Message):
     text = await _(user_lang, 'def_vol')
     await init_m.edit(text)
     try:
-        audio = AudioSegment.from_file(path_file)
-        max_vol = audio.max_dBFS
-        if vol > 0:
-            audio = audio+vol
-        else:
-            audio = audio-vol
-        audio.export(f"downloads/{m.audio.file_name}")
-        await m.reply_audio(f"downloads/{m.audio.file_name}", caption=f"**Gain:** `{vol}`", progress=progress, progress_args=(init_m, user_lang, 'upl'))
+        blocking_coro = asyncio.to_thread(audio_norm, path_file, vol)
+        result = await blocking_coro
+        await m.reply_audio(f"downloads/{m.audio.file_name}", progress=progress, progress_args=(init_m, user_lang, 'upl'))
         await init_m.delete()
         os.remove(path_file)
     except:
-        await init_m.edit("**❌ Error...**")
         if os.path.exists(path_file):
             os.remove(path_file)
 
@@ -144,20 +148,21 @@ async def set_vol(__, call: CallbackQuery):
         await call.message.reply(_set_vol_es)
         return
     now_vol = now_vol.text
-    if now_vol.isnumeric():
+    try:
         now_vol = float(now_vol)
-        ac_vol = await database.get_vol(user_id)
-        if now_vol == ac_vol:
-            _num_vol_same = await _(user_lang, 'num_vol_same')
-            await call.message.reply(_num_vol_same)
-        else:
-            col = database.users_col
-            await col.update_one({'user_id': user_id}, {'$set': {'vol': now_vol}})
-            _set_vol_sus = await _(user_lang, 'set_vol_sus')
-            await call.message.reply(_set_vol_sus)
-    else:
+    except:
         _num_not_valid = await _(user_lang, 'num_not_valid')
         await call.message.reply(_num_not_valid)
+        return
+    ac_vol = await database.get_vol(user_id)
+    if now_vol == ac_vol:
+        _num_vol_same = await _(user_lang, 'num_vol_same')
+        await call.message.reply(_num_vol_same)
+    else:
+        col = database.users_col
+        await col.update_one({'user_id': user_id}, {'$set': {'vol': now_vol}})
+        _set_vol_sus = await _(user_lang, 'set_vol_sus')
+        await call.message.reply(_set_vol_sus)
 
 
 mp3normalizer.run()

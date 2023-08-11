@@ -2,14 +2,14 @@ en-us:
     start: "**Hello, %{user_mention}!**\n\nWelcome to **MP3 Normalizer** a bot where you can **set a volume** and all the audios you send me await **patterned on them** , you can also set my language using `/settings`!"
     down: "**⬇️ Downloading...** `%{progr}%`"
     upl: "**⬆️ Uploading...** `%{progr}%`"
-    def_vol: "🔊 **Defining volume...**"
+    def_vol: "🔊 **Normalizing The Audio...**"
     settings: "⚙️ **Here you can set the language of the bot and also set the gain for the audios sent to the bot.**"
     set_lang_btn: 🌏 Set Language
     set_lang_main: "🌏 **Set your new language here.**"
     same_lang: The language you want to define is the same language you are currently using.
-    lang_def: Ok, new language defined.
+    lang_def: ✅Ok, new language defined.
     set_vol_btn: 🔊 Set Volume
-    set_vol_main: "🔊 Ok, now send me a number, **be careful with numbers that are too high, as it can break your audio!**"
+    set_vol_main: "🔊 Ok, now send me the volume in DBFs to normalize the audios, recommended -20"
     num_not_valid: "❌ **The number sent is not valid!**"
     num_vol_same: "❌ **The number sent is the same as the one you are currently using!**"
     set_vol_es: "🕙 **Response time expired!**"
