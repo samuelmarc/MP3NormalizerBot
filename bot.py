@@ -72,7 +72,7 @@ async def start(__, m: Message):
 async def repo(__, m: Message):
     text = f"🗂 **Below you can access the bot's public repository.**"
     btn = ikb([[('🌐 Repository', 'https://github.com/samuelmarc/MP3NormalizerBot', 'url')]])
-    await m.reply(text, reply_markup=btn)
+    await m.reply_photo(photo="https://github.com/samuelmarc/MP3NormalizerBot", caption=text, reply_markup=btn)
 
 
 @mp3normalizer.on_message(filters.audio & filters.private)
