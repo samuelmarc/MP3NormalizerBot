@@ -8,7 +8,6 @@ import i18n
 from pyroaddon.helpers import ikb
 import os
 from asyncio.exceptions import TimeoutError
-import asyncio
 from pydub import AudioSegment
 import re
 
@@ -25,14 +24,6 @@ async def _(lang: str, key: str, **kwargs):
     i18n.set('locale', lang)
     text_in_lang = i18n.t(f'langs.{key}', **kwargs)
     return text_in_lang
-
-
-def audio_norm(path_file, vol):
-    sound = AudioSegment.from_file(path_file)
-    change_in_dBFS = vol - sound.dBFS
-    norm_sound = sound.apply_gain(change_in_dBFS)
-    norm_sound.export(path_file)
-    return 1
 
 
 mp3normalizer = Client(name='mp3normalizer', api_id=Config.API_ID, api_hash=Config.API_HASH, bot_token=Config.BOT_TOKEN, parse_mode=ParseMode.MARKDOWN)
@@ -85,8 +76,10 @@ async def audio_normalizer(__, m: Message):
     text = await _(user_lang, 'def_vol')
     await init_m.edit(text)
     try:
-        blocking_coro = asyncio.to_thread(audio_norm, path_file, vol)
-        result = await blocking_coro
+        sound = AudioSegment.from_file(path_file)
+        change_in_dBFS = vol - sound.dBFS
+        norm_sound = sound.apply_gain(change_in_dBFS)
+        norm_sound.export(path_file)
         await m.reply_audio(f"downloads/{m.audio.file_name}", progress=progress, progress_args=(init_m, user_lang, 'upl'))
         await init_m.delete()
         os.remove(path_file)
